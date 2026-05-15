@@ -4,7 +4,7 @@ import requests
 app = Flask(__name__)
 
 # Tapaiko API URL
-API_BASE_URL = "https://visi-tapi-free-fire-ckrpro-on-top.vercel.app/bd/"
+API_BASE_URL = "https://free-fire-visit-ckrpro-api.vercel.app/bd/"
 
 @app.route('/')
 def index():
