@@ -1,1 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CKR PRO TOOLS</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        
+        body {
+            margin: 0; padding: 0;
+            background: #eef1f7;
+            height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            font-family: -apple-system, system-ui, sans-serif;
+            overflow: hidden;
+        }
 
+        .container {
+            width: 90%;
+            max-width: 340px;
+            background: white;
+            border-radius: 10px; /* Square Look */
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        /* Premium Blue Banner */
+        .banner {
+            background: linear-gradient(135deg, #007aff, #0051af);
+            padding: 22px 15px;
+            color: white;
+            text-align: center;
+        }
+
+        .banner h1 { font-size: 14px; margin: 0; letter-spacing: 0.5px; font-weight: 800; text-transform: uppercase; }
+
+        .content { padding: 25px 20px; text-align: center; }
+
+        .input-box {
+            width: 100%;
+            padding: 14px;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+            background: #fafafa;
+            margin-bottom: 15px;
+            font-size: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 14px;
+            border-radius: 5px;
+            border: none;
+            background: #1d1d1f;
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.2s;
+        }
+
+        .btn-action:active { transform: scale(0.98); opacity: 0.9; }
+
+        #tool-area { display: none; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .wa-link {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            background: #25D366; color: white; padding: 13px; border-radius: 5px;
+            text-decoration: none; font-size: 13px; font-weight: 700; margin-top: 15px;
+        }
+
+        .footer { font-size: 9px; color: #999; margin-top: 20px; font-weight: 600; text-transform: uppercase; }
+        
+        .status-card {
+            background: #f0f9ff; padding: 10px; border-radius: 5px; margin-top: 15px;
+            font-size: 13px; color: #007aff; font-weight: 700; display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="banner">
+        <h1>FREE FIRE PROFILE VISITS TOOL</h1>
+    </div>
+
+    <div class="content">
+        <div id="login-area">
+            <i class="fas fa-shield-halved" style="font-size: 30px; color: #007aff; margin-bottom: 15px;"></i>
+            <input type="password" id="pass" class="input-box" placeholder="ENTER ACCESS CODE" oninput="verify()">
+        </div>
+
+        <div id="tool-area">
+            <input type="number" id="uid" class="input-box" placeholder="PLAYER UID (e.g. 15510000000)">
+            <button class="btn-action" onclick="sendData()">
+                <i class="fas fa-paper-plane"></i> SEND 1000 VISITS
+            </button>
+
+            <div id="status-display" class="status-card"></div>
+
+            <a href="https://wa.me/9840825493" class="wa-link">
+                <i class="fab fa-whatsapp"></i> CUSTOMER SERVICE
+            </a>
+
+            <div class="footer">Daily token update need contact customer service</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Password Verification
+    function verify() {
+        const val = document.getElementById('pass').value;
+        if(val.toUpperCase() === 'CKR') {
+            Swal.fire({
+                icon: 'success',
+                title: 'SYSTEM UNLOCKED',
+                timer: 1000,
+                showConfirmButton: false
+            });
+            document.getElementById('login-area').style.display = 'none';
+            document.getElementById('tool-area').style.display = 'block';
+        }
+    }
+
+    // API Integration
+    async function sendData() {
+        const uid = document.getElementById('uid').value;
+        if(!uid) {
+            return Swal.fire('Error', 'Please enter a valid UID', 'error');
+        }
+
+        Swal.fire({
+            title: 'Processing...',
+            text: 'Connecting to Server',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        try {
+            const response = await fetch(`/send_visit/${uid}`);
+            const data = await response.json();
+
+            if(data.status === 'success') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'SUCCESS',
+                    html: `<b>Name:</b> ${data.nickname}<br>1000 Visits Sent!`,
+                    confirmButtonColor: '#007aff'
+                });
+                const statusBox = document.getElementById('status-display');
+                statusBox.style.display = 'block';
+                statusBox.innerHTML = `<i class="fas fa-check"></i> SENT TO ${data.nickname}`;
+            } else {
+                Swal.fire('Failed', data.message, 'error');
+            }
+        } catch (error) {
+            Swal.fire('Error', 'Server connection failed!', 'error');
+        }
+    }
+</script>
+
+</body>
+</html>
